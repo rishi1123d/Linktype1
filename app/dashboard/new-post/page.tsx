@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { DashboardShell } from "@/components/dashboard-shell"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Sparkles, Check, Clock, Save, Send, Wand2 } from "lucide-react"
 
 export default function NewPostPage() {
@@ -205,316 +205,243 @@ export default function NewPostPage() {
                   </TabsTrigger>
                 </TabsList>
 
-                <AnimatePresence mode="wait">
-                  <TabsContent value="templates" key="templates">
-                    <motion.div
-                      className="space-y-4 mt-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
+                <TabsContent value="templates">
+                  <motion.div
+                    className="space-y-4 mt-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="space-y-2">
+                      <Label htmlFor="template-search" className="text-gray-700">
+                        Search Templates
+                      </Label>
+                      <Input
+                        id="template-search"
+                        placeholder="Search by keyword or category..."
+                        className="border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
+                      />
+                    </div>
+
+                    <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+                      <div className="grid gap-3">
+                        {[
+                          {
+                            title: "The AIDA Formula",
+                            category: "Copywriting",
+                            description:
+                              "Grab attention, build interest, create desire, and prompt action with this classic formula",
+                          },
+                          {
+                            title: "The PAS Framework",
+                            category: "Problem Solving",
+                            description: "Present the problem, agitate it, then offer your solution",
+                          },
+                          {
+                            title: "Personal Story Arc",
+                            category: "Storytelling",
+                            description: "Share your journey with a compelling beginning, middle, and end",
+                          },
+                          {
+                            title: "Expert Roundup",
+                            category: "Thought Leadership",
+                            description: "Compile insights from industry experts on a specific topic",
+                          },
+                          {
+                            title: "How-To Guide",
+                            category: "Educational",
+                            description: "Break down a process into clear, actionable steps",
+                          },
+                          {
+                            title: "Data-Driven Insights",
+                            category: "Analytics",
+                            description: "Share surprising statistics and what they mean for your industry",
+                          },
+                        ].map((template, index) => (
+                          <motion.div
+                            key={index}
+                            className={`p-4 border rounded-lg cursor-pointer hover:shadow-md transition-all ${selectedTemplate === template.title ? "border-[#0077B5] bg-[#0077B5]/5" : "border-gray-200"}`}
+                            onClick={() => handleTemplateSelect(template.title)}
+                            whileHover={{ y: -2 }}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium text-gray-900">{template.title}</h3>
+                                <p className="text-xs text-[#0077B5] mt-1">{template.category}</p>
+                              </div>
+                              {selectedTemplate === template.title && (
+                                <div className="bg-[#0077B5] text-white p-1 rounded-full">
+                                  <Check className="h-4 w-4" />
+                                </div>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 mt-2">{template.description}</p>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                </TabsContent>
+
+                <TabsContent value="ai-assist">
+                  <motion.div
+                    className="space-y-6 mt-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="template-search" className="text-gray-700">
-                          Search Templates
-                        </Label>
-                        <Input
-                          id="template-search"
-                          placeholder="Search by keyword or category..."
-                          className="border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
+                        <Label className="text-gray-700">What would you like to write about?</Label>
+                        <Textarea
+                          placeholder="E.g., 'The importance of data-driven decision making in modern marketing strategies'"
+                          className="h-24 border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
+                          defaultValue="The importance of data-driven decision making in modern marketing strategies"
                         />
                       </div>
 
-                      <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
-                        <div className="grid gap-3">
-                          {[
-                            {
-                              title: "The AIDA Formula",
-                              category: "Copywriting",
-                              description:
-                                "Grab attention, build interest, create desire, and prompt action with this classic formula",
-                            },
-                            {
-                              title: "The PAS Framework",
-                              category: "Problem Solving",
-                              description: "Present the problem, agitate it, then offer your solution",
-                            },
-                            {
-                              title: "Personal Story Arc",
-                              category: "Storytelling",
-                              description: "Share your journey with a compelling beginning, middle, and end",
-                            },
-                            {
-                              title: "Expert Roundup",
-                              category: "Thought Leadership",
-                              description: "Compile insights from industry experts on a specific topic",
-                            },
-                            {
-                              title: "How-To Guide",
-                              category: "Educational",
-                              description: "Break down a process into clear, actionable steps",
-                            },
-                            {
-                              title: "Data-Driven Insights",
-                              category: "Analytics",
-                              description: "Share surprising statistics and what they mean for your industry",
-                            },
-                          ].map((template, index) => (
-                            <motion.div
-                              key={index}
-                              className={`p-4 border rounded-lg cursor-pointer hover:shadow-md transition-all ${selectedTemplate === template.title ? "border-[#0077B5] bg-[#0077B5]/5" : "border-gray-200"}`}
-                              onClick={() => handleTemplateSelect(template.title)}
-                              whileHover={{ y: -2 }}
-                            >
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <h3 className="font-medium text-gray-900">{template.title}</h3>
-                                  <p className="text-xs text-[#0077B5] mt-1">{template.category}</p>
-                                </div>
-                                {selectedTemplate === template.title && (
-                                  <div className="bg-[#0077B5] text-white p-1 rounded-full">
-                                    <Check className="h-4 w-4" />
-                                  </div>
-                                )}
-                              </div>
-                              <p className="text-sm text-gray-600 mt-2">{template.description}</p>
-                            </motion.div>
-                          ))}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-gray-700">Tone</Label>
+                          <Select defaultValue="professional">
+                            <SelectTrigger className="border-gray-300">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="professional">Professional</SelectItem>
+                              <SelectItem value="conversational">Conversational</SelectItem>
+                              <SelectItem value="authoritative">Authoritative</SelectItem>
+                              <SelectItem value="inspirational">Inspirational</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-gray-700">Length</Label>
+                          <Select defaultValue="medium">
+                            <SelectTrigger className="border-gray-300">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="short">Short (1-2 paragraphs)</SelectItem>
+                              <SelectItem value="medium">Medium (3-4 paragraphs)</SelectItem>
+                              <SelectItem value="long">Long (5+ paragraphs)</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
-                    </motion.div>
-                  </TabsContent>
 
-                  <TabsContent value="ai-assist" key="ai-assist">
-                    <motion.div
-                      className="space-y-6 mt-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-gray-700">What would you like to write about?</Label>
-                          <Textarea
-                            placeholder="E.g., 'The importance of data-driven decision making in modern marketing strategies'"
-                            className="h-24 border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
-                            defaultValue="The importance of data-driven decision making in modern marketing strategies"
-                          />
-                        </div>
+                      <Button
+                        className="w-full bg-[#0077B5] hover:bg-[#0073b1] gap-2"
+                        onClick={handleAIGenerate}
+                        disabled={isGenerating}
+                      >
+                        {isGenerating ? (
+                          <>
+                            <svg
+                              className="animate-spin h-4 w-4 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Wand2 className="h-4 w-4" />
+                            Generate Post
+                          </>
+                        )}
+                      </Button>
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label className="text-gray-700">Tone</Label>
-                            <Select defaultValue="professional">
-                              <SelectTrigger className="border-gray-300">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="professional">Professional</SelectItem>
-                                <SelectItem value="conversational">Conversational</SelectItem>
-                                <SelectItem value="authoritative">Authoritative</SelectItem>
-                                <SelectItem value="inspirational">Inspirational</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-gray-700">Length</Label>
-                            <Select defaultValue="medium">
-                              <SelectTrigger className="border-gray-300">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="short">Short (1-2 paragraphs)</SelectItem>
-                                <SelectItem value="medium">Medium (3-4 paragraphs)</SelectItem>
-                                <SelectItem value="long">Long (5+ paragraphs)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-
+                    <div className="space-y-2">
+                      <Label className="text-gray-700">AI Writing Assistant</Label>
+                      <div className="space-y-2">
                         <Button
-                          className="w-full bg-[#0077B5] hover:bg-[#0073b1] gap-2"
-                          onClick={handleAIGenerate}
-                          disabled={isGenerating}
+                          variant="outline"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
                         >
-                          {isGenerating ? (
-                            <>
-                              <svg
-                                className="animate-spin h-4 w-4 text-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                ></circle>
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                ></path>
-                              </svg>
-                              Generating...
-                            </>
-                          ) : (
-                            <>
-                              <Wand2 className="h-4 w-4" />
-                              Generate Post
-                            </>
-                          )}
+                          ✨ Improve readability
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                        >
+                          🔍 Check for grammar issues
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                        >
+                          💡 Generate hook ideas
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                        >
+                          📊 Add relevant statistics
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                        >
+                          🔄 Rewrite in a different tone
                         </Button>
                       </div>
+                    </div>
+                  </motion.div>
+                </TabsContent>
 
-                      <div className="space-y-2">
-                        <Label className="text-gray-700">AI Writing Assistant</Label>
-                        <div className="space-y-2">
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
-                          >
-                            ✨ Improve readability
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
-                          >
-                            🔍 Check for grammar issues
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
-                          >
-                            💡 Generate hook ideas
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
-                          >
-                            📊 Add relevant statistics
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
-                          >
-                            🔄 Rewrite in a different tone
-                          </Button>
+                <TabsContent value="preview">
+                  <motion.div
+                    className="space-y-4 mt-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="border rounded-lg p-6 space-y-4 bg-white shadow-sm">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 rounded-full bg-[#0077B5] flex items-center justify-center text-white font-bold">
+                          JD
                         </div>
-                      </div>
-                    </motion.div>
-                  </TabsContent>
-
-                  <TabsContent value="preview" key="preview">
-                    <motion.div
-                      className="space-y-4 mt-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="border rounded-lg p-6 space-y-4 bg-white shadow-sm">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 rounded-full bg-[#0077B5] flex items-center justify-center text-white font-bold">
-                            JD
-                          </div>
-                          <div>
-                            <div className="font-medium text-gray-900">John Doe</div>
-                            <div className="text-sm text-gray-500 flex items-center gap-1">
-                              <span>Marketing Director</span>
-                              <span>•</span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                Just now
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="whitespace-pre-wrap text-gray-800">
-                          {postContent || "Your post preview will appear here..."}
-                        </div>
-
-                        <div className="pt-4 border-t flex space-x-6 text-sm text-gray-500">
-                          <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
-                            <svg
-                              className="h-5 w-5 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 23h-4.017a2 2 0 01-1.789-1.106l-3.5-7A2 2 0 017.247 10H12"
-                              ></path>
-                            </svg>
-                            Like
-                          </div>
-                          <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
-                            <svg
-                              className="h-5 w-5 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                              ></path>
-                            </svg>
-                            Comment
-                          </div>
-                          <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
-                            <svg
-                              className="h-5 w-5 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                              ></path>
-                            </svg>
-                            Repost
-                          </div>
-                          <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
-                            <svg
-                              className="h-5 w-5 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                              ></path>
-                            </svg>
-                            Send
+                        <div>
+                          <div className="font-medium text-gray-900">John Doe</div>
+                          <div className="text-sm text-gray-500 flex items-center gap-1">
+                            <span>Marketing Director</span>
+                            <span>•</span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              Just now
+                            </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <p className="flex items-center gap-2">
+                      <div className="whitespace-pre-wrap text-gray-800">
+                        {postContent || "Your post preview will appear here..."}
+                      </div>
+
+                      <div className="pt-4 border-t flex space-x-6 text-sm text-gray-500">
+                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
                           <svg
-                            className="h-5 w-5 text-[#0077B5]"
+                            className="h-5 w-5 mr-1"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -524,16 +451,87 @@ export default function NewPostPage() {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth="2"
-                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 23h-4.017a2 2 0 01-1.789-1.106l-3.5-7A2 2 0 017.247 10H12"
                             ></path>
                           </svg>
-                          This is how your post will appear on LinkedIn. Make any necessary adjustments before
-                          publishing.
-                        </p>
+                          Like
+                        </div>
+                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
+                          <svg
+                            className="h-5 w-5 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                            ></path>
+                          </svg>
+                          Comment
+                        </div>
+                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
+                          <svg
+                            className="h-5 w-5 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            ></path>
+                          </svg>
+                          Repost
+                        </div>
+                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
+                          <svg
+                            className="h-5 w-5 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                            ></path>
+                          </svg>
+                          Send
+                        </div>
                       </div>
-                    </motion.div>
-                  </TabsContent>
-                </AnimatePresence>
+                    </div>
+
+                    <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <p className="flex items-center gap-2">
+                        <svg
+                          className="h-5 w-5 text-[#0077B5]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          ></path>
+                        </svg>
+                        This is how your post will appear on LinkedIn. Make any necessary adjustments before
+                        publishing.
+                      </p>
+                    </div>
+                  </motion.div>
+                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>

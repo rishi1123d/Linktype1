@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { Bell, User, Settings, LogOut, CreditCard } from "lucide-react"
 
 export function UserNav() {
@@ -34,45 +34,43 @@ export function UserNav() {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <AnimatePresence>
-          {isOpen && (
-            <DropdownMenuContent className="w-56" align="end" forceMount asChild>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">John Doe</p>
-                    <p className="text-xs leading-none text-gray-500">john.doe@example.com</p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
-                    <CreditCard className="h-4 w-4" />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer flex items-center gap-2 text-red-600">
-                  <LogOut className="h-4 w-4" />
-                  Log out
+        {isOpen && (
+          <DropdownMenuContent className="w-56" align="end" forceMount asChild>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">John Doe</p>
+                  <p className="text-xs leading-none text-gray-500">john.doe@example.com</p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Profile
                 </DropdownMenuItem>
-              </motion.div>
-            </DropdownMenuContent>
-          )}
-        </AnimatePresence>
+                <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                  <CreditCard className="h-4 w-4" />
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  Settings
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer flex items-center gap-2 text-red-600">
+                <LogOut className="h-4 w-4" />
+                Log out
+              </DropdownMenuItem>
+            </motion.div>
+          </DropdownMenuContent>
+        )}
       </DropdownMenu>
     </div>
   )
