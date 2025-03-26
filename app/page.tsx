@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import { ArrowRight, CheckCircle } from "lucide-react"
+import { ArrowRight, CheckCircle, Link2 } from "lucide-react"
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -50,8 +50,11 @@ export default function Home() {
       >
         <div className="container flex h-16 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold bg-gradient-to-r from-[#0077B5] to-[#00a0dc] bg-clip-text text-transparent">
-              PostCraft
+            <div className="rounded-md bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] p-1.5 shadow-md mr-2">
+              <Link2 className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] bg-clip-text text-transparent">
+              LinkType
             </span>
           </div>
           <nav className="hidden md:flex gap-6">
@@ -658,28 +661,21 @@ export default function Home() {
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
                 Loved by LinkedIn professionals
               </h2>
-              <p className="text-xl text-gray-600">See what our users are saying about PostCraft</p>
+              <p className="text-xl text-gray-600">See what our users are saying about LinkType</p>
             </motion.div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
                   quote:
-                    "PostCraft has completely transformed how I create content for LinkedIn. I've seen a 300% increase in engagement since I started using it.",
+                    "LinkType has completely transformed how I create content for LinkedIn. I've seen a 300% increase in engagement since I started using it.",
                   author: "Sarah Johnson",
                   role: "Marketing Director",
                   image: "/placeholder.svg?height=100&width=100",
                 },
                 {
                   quote:
-                    "The AI suggestions are spot on. It's like having a professional copywriter on my team. I can create a week's worth of content in under an hour.",
-                  author: "Michael Chen",
-                  role: "Startup Founder",
-                  image: "/placeholder.svg?height=100&width=100",
-                },
-                {
-                  quote:
-                    "As a consultant, my LinkedIn presence is crucial. PostCraft has helped me establish thought leadership in my industry with minimal effort.",
+                    "As a consultant, my LinkedIn presence is crucial. LinkType has helped me establish thought leadership in my industry with minimal effort.",
                   author: "Emma Rodriguez",
                   role: "Business Consultant",
                   image: "/placeholder.svg?height=100&width=100",
@@ -759,8 +755,11 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
             <div className="col-span-2 lg:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl font-bold bg-gradient-to-r from-[#0077B5] to-[#00a0dc] bg-clip-text text-transparent">
-                  PostCraft
+                <div className="rounded-md bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] p-1.5 shadow-md mr-2">
+                  <Link2 className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] bg-clip-text text-transparent">
+                  LinkType
                 </span>
               </div>
               <p className="text-gray-600 mb-4 max-w-xs">
@@ -889,7 +888,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
-            © 2025 PostCraft. All rights reserved.
+            © 2025 LinkType. All rights reserved.
           </div>
         </div>
       </footer>

@@ -13,6 +13,7 @@ import { FcGoogle } from "react-icons/fc"
 import { ArrowLeft } from "lucide-react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { FaLinkedin } from "react-icons/fa"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -25,9 +26,9 @@ export default function LoginPage() {
     setIsLoading(true)
     
     try {
-      // For now, we're only supporting Google OAuth
+      // For now, we're only supporting OAuth
       // This is a placeholder for future email/password auth
-      alert("Email/password login not implemented yet. Please use Google sign-in.")
+      alert("Email/password login not implemented yet. Please use Google or LinkedIn sign-in.")
       setIsLoading(false)
     } catch (error) {
       console.error("Login error:", error)
@@ -41,6 +42,16 @@ export default function LoginPage() {
       await signIn("google", { callbackUrl: "/dashboard" })
     } catch (error) {
       console.error("Google login error:", error)
+      setIsLoading(false)
+    }
+  }
+
+  const handleLinkedInLogin = async () => {
+    setIsLoading(true)
+    try {
+      await signIn("linkedin", { callbackUrl: "/dashboard" })
+    } catch (error) {
+      console.error("LinkedIn login error:", error)
       setIsLoading(false)
     }
   }
@@ -68,8 +79,8 @@ export default function LoginPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
               >
-                <span className="text-2xl font-bold bg-gradient-to-r from-[#0077B5] to-[#00a0dc] bg-clip-text text-transparent">
-                  PostCraft
+                <span className="text-2xl font-bold bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] bg-clip-text text-transparent">
+                  LinkType
                 </span>
               </motion.div>
               <motion.h1
@@ -95,15 +106,27 @@ export default function LoginPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
-              <Button
-                variant="outline"
-                className="w-full flex items-center justify-center gap-2 h-12 border-gray-300 hover:bg-gray-50 transition-colors"
-                onClick={handleGoogleLogin}
-                disabled={isLoading}
-              >
-                <FcGoogle className="h-5 w-5" />
-                <span>Continue with Google</span>
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 h-12 border-gray-300 hover:bg-gray-50 transition-colors"
+                  onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                >
+                  <FcGoogle className="h-5 w-5" />
+                  <span>Continue with Google</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 h-12 border-gray-300 bg-[#0A66C2] hover:bg-[#004182] text-white transition-colors"
+                  onClick={handleLinkedInLogin}
+                  disabled={isLoading}
+                >
+                  <FaLinkedin className="h-5 w-5" />
+                  <span>Continue with LinkedIn</span>
+                </Button>
+              </div>
 
               <div className="mt-6 flex items-center justify-center">
                 <Separator className="w-full" />

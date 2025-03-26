@@ -13,6 +13,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
 import { LogOut, Settings, User } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { FcGoogle } from "react-icons/fc"
+import { FaLinkedin } from "react-icons/fa"
 
 export function UserAuthButton() {
   const { data: session, status } = useSession()
@@ -28,13 +38,42 @@ export function UserAuthButton() {
 
   if (!session) {
     return (
-      <Button 
-        variant="outline" 
-        onClick={() => signIn("google")}
-        className="border-linkedin hover:bg-linkedin/10 text-linkedin hover:text-linkedin-dark"
-      >
-        Sign In
-      </Button>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button 
+            variant="outline" 
+            className="border-linkedin hover:bg-linkedin/10 text-linkedin hover:text-linkedin-dark"
+          >
+            Sign In
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Sign in to your account</DialogTitle>
+            <DialogDescription>
+              Choose your preferred sign in method
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 py-4">
+            <Button 
+              variant="outline" 
+              onClick={() => signIn("google")}
+              className="w-full flex items-center justify-center gap-2 h-12 border-gray-300 hover:bg-gray-50 transition-colors"
+            >
+              <FcGoogle className="h-5 w-5" />
+              <span>Continue with Google</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => signIn("linkedin")}
+              className="w-full flex items-center justify-center gap-2 h-12 border-gray-300 bg-[#0A66C2] hover:bg-[#004182] text-white transition-colors"
+            >
+              <FaLinkedin className="h-5 w-5" />
+              <span>Continue with LinkedIn</span>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     )
   }
 

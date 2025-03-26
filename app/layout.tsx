@@ -2,6 +2,12 @@ import type React from "react"
 import "@/app/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth-provider"
+import { Toaster } from "sonner"
+
+export const metadata = {
+  title: "LinkType - LinkedIn Post Writer",
+  description: "Create engaging LinkedIn posts in minutes with our AI-powered platform.",
+}
 
 export default function RootLayout({
   children,
@@ -10,14 +16,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <title>PostCraft - LinkedIn Post Writer</title>
-        <meta name="description" content="Create engaging LinkedIn posts in minutes with our AI-powered platform" />
-      </head>
+      <head />
       <body suppressHydrationWarning>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
             {children}
+            <Toaster position="bottom-right" />
           </ThemeProvider>
         </AuthProvider>
       </body>

@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 import { DashboardNav } from "@/components/dashboard-nav"
 import { UserNav } from "@/components/user-nav"
 import { UserAuthButton } from "@/components/user-auth-button"
-import { Menu } from "lucide-react"
+import { Menu, PenLine, Link2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
@@ -32,7 +32,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
         className={`sticky top-0 z-40 transition-all duration-200 ${isScrolled ? "bg-white shadow-sm" : "bg-white"}`}
       >
         <div className="container flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
@@ -42,16 +42,26 @@ export function DashboardShell({ children }: DashboardShellProps) {
               </SheetTrigger>
               <SheetContent side="left" className="w-[240px] sm:w-[280px] p-0">
                 <div className="flex h-16 items-center border-b px-4">
-                  <span className="text-xl font-bold bg-gradient-to-r from-[#0077B5] to-[#00a0dc] bg-clip-text text-transparent">
-                    PostCraft
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <div className="rounded-md bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] p-1.5 shadow-md">
+                      <Link2 className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-xl font-bold bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] bg-clip-text text-transparent">
+                      LinkType
+                    </span>
+                  </div>
                 </div>
                 <DashboardNav />
               </SheetContent>
             </Sheet>
-            <span className="text-xl font-bold bg-gradient-to-r from-[#0077B5] to-[#00a0dc] bg-clip-text text-transparent">
-              PostCraft
-            </span>
+            <div className="flex items-center ml-6">
+              <div className="rounded-md bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] p-1.5 shadow-md mr-2 transform hover:rotate-3 transition-transform">
+                <Link2 className="h-4 w-4 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-[#0A66C2] to-[#00a0dc] bg-clip-text text-transparent tracking-tight">
+                LinkType
+              </span>
+            </div>
           </div>
           <UserAuthButton />
         </div>

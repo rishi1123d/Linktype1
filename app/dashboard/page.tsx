@@ -9,6 +9,7 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { DashboardShell } from "@/components/dashboard-shell"
 import { PostTemplateCard } from "@/components/post-template-card"
 import { RecentPostCard } from "@/components/recent-post-card"
+import { LinkedInIntegration } from "@/components/linkedin-integration"
 import { motion } from "framer-motion"
 import { BarChart3, Users, TrendingUp, Eye, Plus } from "lucide-react"
 
@@ -141,6 +142,10 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </motion.div>
+      </motion.div>
+
+      <motion.div className="mt-8">
+        <LinkedInIntegration />
       </motion.div>
 
       <motion.div

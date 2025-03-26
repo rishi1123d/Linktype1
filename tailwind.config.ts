@@ -25,13 +25,13 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         linkedin: {
-          DEFAULT: "#0077B5",
-          dark: "#0073b1",
+          DEFAULT: "#0A66C2",
+          dark: "#004182",
           light: "#00a0dc",
-          darker: "#004182",
+          darker: "#003163",
         },
         primary: {
-          DEFAULT: "#0077B5",
+          DEFAULT: "#0A66C2",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
