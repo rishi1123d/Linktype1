@@ -169,27 +169,22 @@ export default function Home() {
                 <div className="relative w-full max-w-[600px] aspect-video rounded-xl overflow-hidden shadow-2xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#0077B5]/20 to-[#00a0dc]/20 z-10 rounded-xl"></div>
                   <img
-                    src="/placeholder.svg?height=600&width=800"
+                    src="/Use Linktype.png"
                     alt="Dashboard preview"
                     className="object-cover w-full h-full rounded-xl"
                   />
                   <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent z-20"></div>
                   <motion.div
-                    className="absolute bottom-4 left-4 right-4 z-30 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg"
+                    className="absolute bottom-2 left-2 right-2 z-30 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.6, duration: 0.5 }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#0077B5] flex items-center justify-center text-white font-bold">
-                        JD
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900">John Doe</div>
-                        <div className="text-xs text-gray-500">Marketing Director • Just now</div>
-                      </div>
+                    <div>
+                      <div className="font-medium text-gray-900 text-sm">Mr Beast</div>
+                      <div className="text-xs text-gray-500">Marketing Director • Just now</div>
                     </div>
-                    <p className="mt-2 text-sm text-gray-700">
+                    <p className="mt-1 text-xs text-gray-700">
                       I've been using AI to transform our content strategy, and the results have been incredible.
                       Engagement is up 247% and our conversion rate has doubled...
                     </p>

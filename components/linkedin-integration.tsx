@@ -11,6 +11,7 @@ import { FaLinkedin } from "react-icons/fa"
 import { ExternalLink, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
+import Image from "next/image"
 
 interface LinkedInStats {
   followers: number;
@@ -157,11 +158,30 @@ export function LinkedInIntegration() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FaLinkedin className="text-[#0A66C2]" /> 
-          LinkedIn Dashboard for {data?.profile.firstName} {data?.profile.lastName}
-        </CardTitle>
-        <CardDescription>View your LinkedIn stats and activity</CardDescription>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-full relative overflow-hidden border border-gray-200 flex-shrink-0">
+            {data?.profile.pictureUrl ? (
+              <Image
+                src={data.profile.pictureUrl}
+                alt={`${data.profile.firstName} profile`}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-[#0A66C2] flex items-center justify-center text-white font-medium">
+                {data?.profile.firstName?.[0] || ''}
+                {data?.profile.lastName?.[0] || ''}
+              </div>
+            )}
+          </div>
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <FaLinkedin className="text-[#0A66C2]" /> 
+              LinkedIn Dashboard for {data?.profile.firstName} {data?.profile.lastName}
+            </CardTitle>
+            <CardDescription>View your LinkedIn stats and activity</CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="stats">

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,20 +10,36 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { motion } from "framer-motion"
 import { FcGoogle } from "react-icons/fc"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, AlertCircle } from "lucide-react"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { FaLinkedin } from "react-icons/fa"
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Check for error in URL parameters
+    const errorFromParams = searchParams.get("error")
+    if (errorFromParams) {
+      let errorMessage = "An error occurred during authentication."
+      if (errorFromParams === "OAuthSignin") errorMessage = "Could not start the sign in process."
+      if (errorFromParams === "OAuthCallback") errorMessage = "Error during sign in callback."
+      if (errorFromParams === "OAuthAccountNotLinked") errorMessage = "This account is already linked with another provider."
+      if (errorFromParams === "Callback") errorMessage = "Error during callback processing."
+      setError(errorMessage)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(null)
     
     try {
       // For now, we're only supporting OAuth
@@ -32,26 +48,31 @@ export default function LoginPage() {
       setIsLoading(false)
     } catch (error) {
       console.error("Login error:", error)
+      setError("Failed to log in with email and password.")
       setIsLoading(false)
     }
   }
 
   const handleGoogleLogin = async () => {
     setIsLoading(true)
+    setError(null)
     try {
       await signIn("google", { callbackUrl: "/dashboard" })
     } catch (error) {
       console.error("Google login error:", error)
+      setError("Failed to log in with Google.")
       setIsLoading(false)
     }
   }
 
   const handleLinkedInLogin = async () => {
     setIsLoading(true)
+    setError(null)
     try {
       await signIn("linkedin", { callbackUrl: "/dashboard" })
     } catch (error) {
       console.error("LinkedIn login error:", error)
+      setError("Failed to log in with LinkedIn.")
       setIsLoading(false)
     }
   }
@@ -106,6 +127,13 @@ export default function LoginPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm flex items-start">
+                  <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <div className="flex flex-col gap-3">
                 <Button
                   variant="outline"

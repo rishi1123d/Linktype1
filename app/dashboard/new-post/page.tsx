@@ -12,17 +12,25 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { DashboardShell } from "@/components/dashboard-shell"
 import { motion } from "framer-motion"
 import { Sparkles, Check, Clock, Save, Send, Wand2 } from "lucide-react"
+import Image from "next/image"
+import { useSession } from "next-auth/react"
 
 export default function NewPostPage() {
   const [postContent, setPostContent] = useState("")
   const [postTitle, setPostTitle] = useState("")
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
+  const [selectedTemplate, setSelectedTemplate] = useState("")
   const [activeTab, setActiveTab] = useState("templates")
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [aiTopic, setAiTopic] = useState("The importance of data-driven decision making in modern marketing strategies")
+  const [aiTone, setAiTone] = useState("professional")
+  const [aiLength, setAiLength] = useState("medium")
+  const [error, setError] = useState<string | null>(null)
+  const [profileImageUrl, setProfileImageUrl] = useState("/mr-beast-profile.jpg")
+  const { data: session } = useSession()
 
   useEffect(() => {
-    setIsLoaded(true)
+    setIsLoading(true)
   }, [])
 
   const handleTemplateSelect = (templateName: string) => {
@@ -39,15 +47,89 @@ export default function NewPostPage() {
     }
   }
 
-  const handleAIGenerate = () => {
-    setIsGenerating(true)
-    // Simulate AI generation
-    setTimeout(() => {
-      setPostContent(
-        "Data-driven decision making has transformed how we approach marketing in 2025.\n\nGone are the days of relying on gut instinct alone. Today's most successful marketers are those who blend creativity with analytical rigor.\n\nIn my experience leading marketing at [Company], we've seen a 247% increase in conversion rates by implementing these three data-driven strategies:\n\n1. Customer journey mapping with behavioral analytics\n2. Predictive modeling for content personalization\n3. Real-time optimization based on engagement metrics\n\nThe results speak for themselves: higher ROI, more efficient spending, and stronger customer relationships.\n\nWhat data-driven approaches have transformed your marketing strategy? Share your experiences below! #MarketingStrategy #DataDrivenDecisions",
-      )
+  const handleAIGenerate = async () => {
+    try {
+      setIsGenerating(true)
+      setError(null)
+      
+      // Enhanced prompt construction based on the user's input
+      const enhancedPrompt = {
+        topic: aiTopic,
+        tone: aiTone,
+        length: aiLength,
+        instructions: `
+          Create an authentic and engaging LinkedIn post about ${aiTopic}. The post should:
+          1. Start with a compelling hook that captures attention
+          2. Share 2-3 concrete lessons learned or insights gained 
+          3. Include specific details and examples to make it authentic
+          4. Mention any collaboration or teamwork aspects if relevant
+          5. End with a question that encourages engagement from other professionals
+          6. Include appropriate hashtags (3-5 max)
+          7. Keep the tone ${aiTone} but authentic
+          8. Include numbers or statistics to add credibility (if relevant)
+          9. Follow a clear story arc with beginning, middle, and end
+          10. Sound like it was written by a real person with genuine experience
+        `
+      };
+      
+      const response = await fetch("/api/ai/generate-post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(enhancedPrompt),
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to generate content")
+      }
+      
+      const data = await response.json()
+      setPostContent(data.content)
+    } catch (err: any) {
+      console.error("Error generating content:", err)
+      setError(err.message || "An error occurred while generating content")
+    } finally {
       setIsGenerating(false)
-    }, 3000)
+    }
+  }
+
+  const handleImproveContent = async (action: string) => {
+    if (!postContent.trim()) {
+      setError("Please generate or write some content first")
+      return
+    }
+    
+    try {
+      setIsGenerating(true)
+      setError(null)
+      
+      const response = await fetch("/api/ai/improve-content", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: postContent,
+          action,
+          tone: aiTone,
+        }),
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to improve content")
+      }
+      
+      const data = await response.json()
+      setPostContent(data.content)
+    } catch (err: any) {
+      console.error("Error improving content:", err)
+      setError(err.message || "An error occurred while improving content")
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const container = {
@@ -69,12 +151,12 @@ export default function NewPostPage() {
     <DashboardShell>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <DashboardHeader heading="Create New Post" text="Craft an engaging LinkedIn post">
-          <div className="flex space-x-2">
-            <Button variant="outline" className="gap-1">
+          <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2 mt-4 sm:mt-0">
+            <Button variant="outline" className="gap-1 w-full sm:w-auto">
               <Save className="h-4 w-4" />
               Save Draft
             </Button>
-            <Button className="bg-[#0077B5] hover:bg-[#0073b1] gap-1">
+            <Button className="bg-[#0A66C2] hover:bg-[#0952a0] gap-1 w-full sm:w-auto">
               <Send className="h-4 w-4" />
               Publish
             </Button>
@@ -83,20 +165,20 @@ export default function NewPostPage() {
       </motion.div>
 
       <motion.div
-        className="grid gap-6 md:grid-cols-7 mt-8"
+        className="grid gap-6 lg:grid-cols-7 md:grid-cols-12 sm:grid-cols-1 mt-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="md:col-span-4 space-y-6">
-          <Card className="border-0 shadow-lg overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-[#0077B5] to-[#00a0dc]"></div>
-            <CardContent className="p-6">
+        <div className="lg:col-span-4 md:col-span-7 sm:col-span-12 space-y-4">
+          <Card className="border-0 shadow-lg overflow-hidden h-full flex flex-col">
+            <div className="h-1 bg-gradient-to-r from-[#0A66C2] to-[#0A8AE6]"></div>
+            <CardContent className="p-4 sm:p-6 flex-grow">
               <motion.div
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6 h-full flex flex-col"
                 variants={container}
                 initial="hidden"
-                animate={isLoaded ? "show" : "hidden"}
+                animate={isLoading ? "show" : "hidden"}
               >
                 <motion.div className="space-y-2" variants={item}>
                   <Label htmlFor="post-title" className="text-gray-700">
@@ -107,11 +189,11 @@ export default function NewPostPage() {
                     placeholder="E.g., 'My thoughts on industry trends'"
                     value={postTitle}
                     onChange={(e) => setPostTitle(e.target.value)}
-                    className="border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
+                    className="border-gray-300 focus:border-[#0A66C2] focus:ring-[#0A66C2] w-full"
                   />
                 </motion.div>
 
-                <motion.div className="space-y-2" variants={item}>
+                <motion.div className="space-y-2 flex-grow flex flex-col" variants={item}>
                   <div className="flex items-center justify-between">
                     <Label htmlFor="post-content" className="text-gray-700">
                       Post Content
@@ -121,7 +203,7 @@ export default function NewPostPage() {
                   <Textarea
                     id="post-content"
                     placeholder="Write your LinkedIn post here..."
-                    className="min-h-[300px] border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
+                    className="min-h-[200px] flex-grow border-gray-300 focus:border-[#0A66C2] focus:ring-[#0A66C2] h-full resize-none sm:min-h-[300px]"
                     value={postContent}
                     onChange={(e) => setPostContent(e.target.value)}
                   />
@@ -129,13 +211,13 @@ export default function NewPostPage() {
 
                 <motion.div className="space-y-4" variants={item}>
                   <Label className="text-gray-700">Post Settings</Label>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="post-category" className="text-sm text-gray-600">
                         Category
                       </Label>
                       <Select>
-                        <SelectTrigger id="post-category" className="border-gray-300">
+                        <SelectTrigger id="post-category" className="border-gray-300 w-full">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -152,7 +234,7 @@ export default function NewPostPage() {
                         Schedule
                       </Label>
                       <Select>
-                        <SelectTrigger id="post-schedule" className="border-gray-300">
+                        <SelectTrigger id="post-schedule" className="border-gray-300 w-full">
                           <SelectValue placeholder="Publish now" />
                         </SelectTrigger>
                         <SelectContent>
@@ -165,10 +247,10 @@ export default function NewPostPage() {
                 </motion.div>
 
                 <motion.div
-                  className="flex items-center gap-2 p-3 bg-[#0077B5]/5 rounded-lg border border-[#0077B5]/10"
+                  className="flex items-center gap-2 p-3 bg-[#0A66C2]/5 rounded-lg border border-[#0A66C2]/10"
                   variants={item}
                 >
-                  <Sparkles className="h-5 w-5 text-[#0077B5]" />
+                  <Sparkles className="h-5 w-5 text-[#0A66C2] flex-shrink-0" />
                   <p className="text-sm text-gray-700">
                     <span className="font-medium">Pro tip:</span> Posts with a clear call-to-action at the end typically
                     receive 2.3x more engagement.
@@ -179,35 +261,35 @@ export default function NewPostPage() {
           </Card>
         </div>
 
-        <div className="md:col-span-3 space-y-6">
-          <Card className="border-0 shadow-lg overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-[#0077B5] to-[#00a0dc]"></div>
-            <CardContent className="p-6">
-              <Tabs defaultValue="templates" onValueChange={setActiveTab}>
-                <TabsList className="bg-gray-100 p-1 w-full">
+        <div className="lg:col-span-3 md:col-span-5 sm:col-span-12 space-y-4">
+          <Card className="border-0 shadow-lg overflow-hidden h-full flex flex-col">
+            <div className="h-1 bg-gradient-to-r from-[#0A66C2] to-[#0A8AE6]"></div>
+            <CardContent className="p-4 sm:p-6 flex-grow flex flex-col">
+              <Tabs defaultValue="templates" className="w-full flex-grow flex flex-col" onValueChange={setActiveTab}>
+                <TabsList className="bg-gray-100 p-1 w-full grid grid-cols-3">
                   <TabsTrigger
                     value="templates"
-                    className={`transition-all ${activeTab === "templates" ? "bg-white text-[#0077B5]" : "text-gray-600"}`}
+                    className={`transition-all ${activeTab === "templates" ? "bg-white text-[#0A66C2]" : "text-gray-600"}`}
                   >
                     Templates
                   </TabsTrigger>
                   <TabsTrigger
                     value="ai-assist"
-                    className={`transition-all ${activeTab === "ai-assist" ? "bg-white text-[#0077B5]" : "text-gray-600"}`}
+                    className={`transition-all ${activeTab === "ai-assist" ? "bg-white text-[#0A66C2]" : "text-gray-600"}`}
                   >
                     AI Assist
                   </TabsTrigger>
                   <TabsTrigger
                     value="preview"
-                    className={`transition-all ${activeTab === "preview" ? "bg-white text-[#0077B5]" : "text-gray-600"}`}
+                    className={`transition-all ${activeTab === "preview" ? "bg-white text-[#0A66C2]" : "text-gray-600"}`}
                   >
                     Preview
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="templates">
+                <TabsContent value="templates" className="flex-grow flex flex-col mt-0 data-[state=active]:mt-4">
                   <motion.div
-                    className="space-y-4 mt-4"
+                    className="space-y-4 flex-grow flex flex-col"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -220,11 +302,11 @@ export default function NewPostPage() {
                       <Input
                         id="template-search"
                         placeholder="Search by keyword or category..."
-                        className="border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
+                        className="border-gray-300 focus:border-[#0A66C2] focus:ring-[#0A66C2] w-full"
                       />
                     </div>
 
-                    <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+                    <div className="space-y-2 overflow-y-auto flex-grow pr-1 min-h-[200px]">
                       <div className="grid gap-3">
                         {[
                           {
@@ -261,17 +343,17 @@ export default function NewPostPage() {
                         ].map((template, index) => (
                           <motion.div
                             key={index}
-                            className={`p-4 border rounded-lg cursor-pointer hover:shadow-md transition-all ${selectedTemplate === template.title ? "border-[#0077B5] bg-[#0077B5]/5" : "border-gray-200"}`}
+                            className={`p-4 border rounded-lg cursor-pointer hover:shadow-md transition-all ${selectedTemplate === template.title ? "border-[#0A66C2] bg-[#0A66C2]/5" : "border-gray-200"}`}
                             onClick={() => handleTemplateSelect(template.title)}
                             whileHover={{ y: -2 }}
                           >
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-medium text-gray-900">{template.title}</h3>
-                                <p className="text-xs text-[#0077B5] mt-1">{template.category}</p>
+                                <p className="text-xs text-[#0A66C2] mt-1">{template.category}</p>
                               </div>
                               {selectedTemplate === template.title && (
-                                <div className="bg-[#0077B5] text-white p-1 rounded-full">
+                                <div className="bg-[#0A66C2] text-white p-1 rounded-full">
                                   <Check className="h-4 w-4" />
                                 </div>
                               )}
@@ -284,30 +366,37 @@ export default function NewPostPage() {
                   </motion.div>
                 </TabsContent>
 
-                <TabsContent value="ai-assist">
+                <TabsContent value="ai-assist" className="flex-grow flex flex-col mt-0 data-[state=active]:mt-4">
                   <motion.div
-                    className="space-y-6 mt-4"
+                    className="space-y-4 flex-grow flex flex-col"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
                   >
+                    {error && (
+                      <div className="p-3 text-sm bg-red-50 border border-red-200 text-red-600 rounded-md">
+                        {error}
+                      </div>
+                    )}
+
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <Label className="text-gray-700">What would you like to write about?</Label>
                         <Textarea
-                          placeholder="E.g., 'The importance of data-driven decision making in modern marketing strategies'"
-                          className="h-24 border-gray-300 focus:border-[#0077B5] focus:ring-[#0077B5]"
-                          defaultValue="The importance of data-driven decision making in modern marketing strategies"
+                          placeholder="E.g., The importance of data-driven decision making in modern marketing strategies"
+                          className="border-gray-300 focus:border-[#0A66C2] focus:ring-[#0A66C2] min-h-[80px] resize-none"
+                          value={aiTopic}
+                          onChange={(e) => setAiTopic(e.target.value)}
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label className="text-gray-700">Tone</Label>
-                          <Select defaultValue="professional">
-                            <SelectTrigger className="border-gray-300">
-                              <SelectValue />
+                          <Select value={aiTone} onValueChange={(value) => setAiTone(value as any)}>
+                            <SelectTrigger className="w-full border-gray-300">
+                              <SelectValue placeholder="Select tone" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="professional">Professional</SelectItem>
@@ -319,9 +408,9 @@ export default function NewPostPage() {
                         </div>
                         <div className="space-y-2">
                           <Label className="text-gray-700">Length</Label>
-                          <Select defaultValue="medium">
-                            <SelectTrigger className="border-gray-300">
-                              <SelectValue />
+                          <Select value={aiLength} onValueChange={(value) => setAiLength(value as any)}>
+                            <SelectTrigger className="w-full border-gray-300">
+                              <SelectValue placeholder="Select length" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="short">Short (1-2 paragraphs)</SelectItem>
@@ -333,7 +422,7 @@ export default function NewPostPage() {
                       </div>
 
                       <Button
-                        className="w-full bg-[#0077B5] hover:bg-[#0073b1] gap-2"
+                        className="w-full bg-[#0A66C2] hover:bg-[#0952a0] gap-2"
                         onClick={handleAIGenerate}
                         disabled={isGenerating}
                       >
@@ -372,59 +461,94 @@ export default function NewPostPage() {
 
                     <div className="space-y-2">
                       <Label className="text-gray-700">AI Writing Assistant</Label>
-                      <div className="space-y-2">
+                      <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                          size="sm"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0A66C2]/5 hover:border-[#0A66C2]/30 hover:text-[#0A66C2] text-sm sm:text-base py-3"
+                          onClick={() => handleImproveContent('improve-readability')}
+                          disabled={isGenerating || !postContent}
                         >
-                          ✨ Improve readability
+                          <span className="flex items-center gap-2">
+                            <span className="text-lg">✨</span>
+                            <span>Improve readability</span>
+                          </span>
                         </Button>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                          size="sm"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0A66C2]/5 hover:border-[#0A66C2]/30 hover:text-[#0A66C2] text-sm sm:text-base py-3"
+                          onClick={() => handleImproveContent('check-grammar')}
+                          disabled={isGenerating || !postContent}
                         >
-                          🔍 Check for grammar issues
+                          <span className="flex items-center gap-2">
+                            <span className="text-lg">🔍</span>
+                            <span>Check for grammar issues</span>
+                          </span>
                         </Button>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                          size="sm"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0A66C2]/5 hover:border-[#0A66C2]/30 hover:text-[#0A66C2] text-sm sm:text-base py-3"
+                          onClick={() => handleImproveContent('generate-hooks')}
+                          disabled={isGenerating || !postContent}
                         >
-                          💡 Generate hook ideas
+                          <span className="flex items-center gap-2">
+                            <span className="text-lg">💡</span>
+                            <span>Generate hook ideas</span>
+                          </span>
                         </Button>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                          size="sm"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0A66C2]/5 hover:border-[#0A66C2]/30 hover:text-[#0A66C2] text-sm sm:text-base py-3"
+                          onClick={() => handleImproveContent('add-statistics')}
+                          disabled={isGenerating || !postContent}
                         >
-                          📊 Add relevant statistics
+                          <span className="flex items-center gap-2">
+                            <span className="text-lg">📊</span>
+                            <span>Add relevant statistics</span>
+                          </span>
                         </Button>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/30 hover:text-[#0077B5]"
+                          size="sm"
+                          className="w-full justify-start text-left border-gray-300 hover:bg-[#0A66C2]/5 hover:border-[#0A66C2]/30 hover:text-[#0A66C2] text-sm sm:text-base py-3"
+                          onClick={() => handleImproveContent('rewrite')}
+                          disabled={isGenerating || !postContent}
                         >
-                          🔄 Rewrite in a different tone
+                          <span className="flex items-center gap-2">
+                            <span className="text-lg">🔄</span>
+                            <span>Rewrite in a different tone</span>
+                          </span>
                         </Button>
                       </div>
                     </div>
                   </motion.div>
                 </TabsContent>
 
-                <TabsContent value="preview">
+                <TabsContent value="preview" className="flex-grow flex flex-col mt-0 data-[state=active]:mt-4">
                   <motion.div
-                    className="space-y-4 mt-4"
+                    className="space-y-4 flex-grow flex flex-col overflow-auto"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="border rounded-lg p-6 space-y-4 bg-white shadow-sm">
+                    <div className="border rounded-lg p-4 sm:p-6 space-y-4 bg-white shadow-sm flex-grow">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 rounded-full bg-[#0077B5] flex items-center justify-center text-white font-bold">
-                          JD
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full relative overflow-hidden flex-shrink-0 border border-gray-200">
+                          <Image
+                            src="/1731544051828.jpeg"
+                            alt="Rishi Kanaparti profile"
+                            fill
+                            className="object-cover"
+                          />
                         </div>
                         <div>
-                          <div className="font-medium text-gray-900">John Doe</div>
-                          <div className="text-sm text-gray-500 flex items-center gap-1">
-                            <span>Marketing Director</span>
+                          <div className="font-medium text-gray-900">Rishi Kanaparti</div>
+                          <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
+                            <span>LinkedIn Professional</span>
                             <span>•</span>
                             <span className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
@@ -434,12 +558,12 @@ export default function NewPostPage() {
                         </div>
                       </div>
 
-                      <div className="whitespace-pre-wrap text-gray-800">
+                      <div className="whitespace-pre-wrap text-gray-800 overflow-y-auto max-h-[300px] sm:max-h-[400px]">
                         {postContent || "Your post preview will appear here..."}
                       </div>
 
                       <div className="pt-4 border-t flex space-x-6 text-sm text-gray-500">
-                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
+                        <div className="flex items-center cursor-pointer hover:text-[#0A66C2] transition-colors">
                           <svg
                             className="h-5 w-5 mr-1"
                             fill="none"
@@ -456,7 +580,7 @@ export default function NewPostPage() {
                           </svg>
                           Like
                         </div>
-                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
+                        <div className="flex items-center cursor-pointer hover:text-[#0A66C2] transition-colors">
                           <svg
                             className="h-5 w-5 mr-1"
                             fill="none"
@@ -473,7 +597,7 @@ export default function NewPostPage() {
                           </svg>
                           Comment
                         </div>
-                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
+                        <div className="flex items-center cursor-pointer hover:text-[#0A66C2] transition-colors">
                           <svg
                             className="h-5 w-5 mr-1"
                             fill="none"
@@ -490,7 +614,7 @@ export default function NewPostPage() {
                           </svg>
                           Repost
                         </div>
-                        <div className="flex items-center cursor-pointer hover:text-[#0077B5] transition-colors">
+                        <div className="flex items-center cursor-pointer hover:text-[#0A66C2] transition-colors">
                           <svg
                             className="h-5 w-5 mr-1"
                             fill="none"
@@ -513,7 +637,7 @@ export default function NewPostPage() {
                     <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded-lg border border-gray-200">
                       <p className="flex items-center gap-2">
                         <svg
-                          className="h-5 w-5 text-[#0077B5]"
+                          className="h-5 w-5 text-[#0A66C2]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
